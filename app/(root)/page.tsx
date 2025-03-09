@@ -1,7 +1,9 @@
+import { ClientSyncUser } from "@/components/client-sync-user";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { useSyncUser } from "@/lib/syncUser";
+import { UserButton } from "@clerk/nextjs";
 import { ShieldAlert } from "lucide-react";
-import Image from "next/image";
 
 export default function Home() {
   return (
@@ -14,7 +16,7 @@ export default function Home() {
         </div>
         <AlertDescription>Tunggu akun kamu diverifikasi oleh admin.</AlertDescription>
       </Alert>
-      <h1></h1>
+      <UserButton />
     </div>
   );
 }

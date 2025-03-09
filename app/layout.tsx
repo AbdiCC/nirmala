@@ -6,6 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Toaster } from "@/components/ui/sonner";
+import { ClerkProvider } from '@clerk/nextjs'
+import { ClientSyncUser } from "@/components/client-sync-user";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,27 +30,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider>
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+        >
         <ThemeProvider
           attribute='class'
           defaultTheme="system"
           enableSystem
-        >
-          <SidebarProvider>
-            <SidebarInset>
-              <Header />
-              <div className='p-3 pt-6'>
-                {children}
-              </div>
-            </SidebarInset>
-            <AppSidebar side='right' />
-            <Toaster />
-          </SidebarProvider>
+          >
+          <ClientSyncUser />
+            {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
+    </ClerkProvider>
   );
 }

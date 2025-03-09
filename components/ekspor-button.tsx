@@ -2,9 +2,9 @@
 
 import { Button } from '@/components/ui/button'
 import { FileSpreadsheet } from 'lucide-react'
-import { exportToExcel } from '@/app/laporan/export-excel'
+import { exportToExcel } from '@/app/(root)/laporan/export-excel'
 import { z } from 'zod'
-import { Laporan } from '@/app/laporan/columns'
+import { Laporan } from '@/app/(root)/laporan/columns'
 
 interface ExportButtonProps {
   data: z.infer<typeof Laporan>[];
