@@ -1,15 +1,25 @@
+import { InferSelectModel } from "drizzle-orm";
 import { integer, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
-export const roleEnum = pgEnum("role", ["belum_terverifikasi", "subagen", 'agen'])
+export const roleEnum = pgEnum("role", ["subagen", 'agen'])
+export const verifyEnum = pgEnum("verify", ["pending", "verified", "unverified"])
+
+export const subagens = pgTable("subagens", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  kode: integer("kode").unique(),
+  wilayah: text("wilayah").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow()
+})
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   clerkId: text("clerk_id").notNull().unique(),
   email: text("email").notNull().unique(),
   name: text("name").notNull(),
-  role: roleEnum("role").notNull().default("belum_terverifikasi"),
-  kode: integer("kode"),
-  subagen: text('subagen'),
+  whatsapp: text("whatsapp"),
+  role: roleEnum("role").notNull().default("subagen"),
+  isVerified: verifyEnum("is_verified").notNull().default("pending"),
+  subagenId: uuid('subagen_id').references(() => subagens.id),
   createdAt: timestamp("created_at").notNull().defaultNow()
 })
 
@@ -23,3 +33,7 @@ export const orders = pgTable("orders", {
   catatan: text("catatan"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 })
+
+export type SubagenType = InferSelectModel<typeof subagens>
+export type UserType = InferSelectModel<typeof users>
+export type OrderType = InferSelectModel<typeof orders>

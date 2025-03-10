@@ -1,9 +1,20 @@
 import { AppSidebar } from '@/components/app-sidebar'
 import { Header } from '@/components/header'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
+import { getCurrentUser } from '@/lib/atuh'
+import { redirect } from 'next/navigation'
 import React from 'react'
 
-const Layout = ({children}:{children : React.ReactNode}) => {
+const Layout = async({children}:{children : React.ReactNode}) => {
+  const user = await getCurrentUser()
+
+  if(user?.isVerified === "pending"){
+    redirect('/onboarding')
+  }
+  if(user?.isVerified === "unverified"){
+    redirect('/')
+  }
+
   return (
     <SidebarProvider>
       <SidebarInset>
@@ -12,7 +23,7 @@ const Layout = ({children}:{children : React.ReactNode}) => {
           {children}
         </div>
       </SidebarInset>
-      <AppSidebar side='right' />
+      <AppSidebar userRole={user?.role || "subagen"} side='right' />
     </SidebarProvider>
   )
 }

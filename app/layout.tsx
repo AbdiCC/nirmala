@@ -8,6 +8,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { ClerkProvider } from '@clerk/nextjs'
 import { ClientSyncUser } from "@/components/client-sync-user";
+import { ClerkDBProvider } from "@/components/clerkdb-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkDBProvider>
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -40,12 +41,11 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           >
-          <ClientSyncUser />
             {children}
           <Toaster />
         </ThemeProvider>
       </body>
     </html>
-    </ClerkProvider>
+    </ClerkDBProvider>
   );
 }
