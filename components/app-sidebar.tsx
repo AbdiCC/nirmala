@@ -1,8 +1,10 @@
-import { Calendar, Home, Settings, ShoppingBag, UserRoundCheck } from "lucide-react"
+"use client"
+import { Calendar, Home, LogOut, Settings, ShoppingBag, UserRoundCheck } from "lucide-react"
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -10,6 +12,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useClerk } from "@clerk/nextjs"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog"
 
 const items = [
   {
@@ -55,13 +59,18 @@ const items = [
 ]
 
 export function AppSidebar({ userRole, ...props }: { userRole: string } & React.ComponentProps<typeof Sidebar>) {
+  const { signOut } = useClerk()
+  const handleLogout = () => {
+    signOut()
+  }
+
   return (
     <Sidebar {...props}>
       <SidebarContent>
         {items.map((item) => {
           // Filter menu berdasarkan role user
           const filteredLists = item.lists.filter(list => list.roles.includes(userRole));
-          
+
           if (filteredLists.length === 0) return null; // Jangan tampilkan grup jika kosong
 
           return (
@@ -84,6 +93,31 @@ export function AppSidebar({ userRole, ...props }: { userRole: string } & React.
             </SidebarGroup>
           );
         })}
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <SidebarMenuButton>
+                    <div className="flex items-center gap-2 text-destructive-foreground">
+                      <LogOut className='w-4 h-4' />
+                      <p>Keluar</p>
+                    </div>
+                  </SidebarMenuButton>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Yakin mau keluar?</AlertDialogTitle>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Batal</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleLogout}>Yakin</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
       </SidebarContent>
     </Sidebar>
   )

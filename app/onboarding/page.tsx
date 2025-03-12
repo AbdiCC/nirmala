@@ -1,6 +1,6 @@
 import { FormOnboarding } from '@/components/form-onboarding'
 import { db } from '@/db'
-import { getCurrentUser } from '@/lib/atuh'
+import { getCurrentUser } from '@/lib/auth'
 import { ShieldCheck } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import React from 'react'

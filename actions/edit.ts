@@ -14,3 +14,15 @@ export const verifyUser = async({id, name, subagenId, whatsapp}: {id: string, na
     })
     .where(eq(users.id, id))
 }
+
+export const accVerify = async(id: string) => {
+  await db.update(users).set({
+    isVerified: "verified"
+  }).where(eq(users.id, id))
+}
+
+export const rejectVerify = async(id: string) => {
+  await db.update(users).set({
+    isVerified: "pending"
+  }).where(eq(users.id, id))
+}

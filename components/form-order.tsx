@@ -8,22 +8,32 @@ import { Input } from './ui/input'
 import { Button } from './ui/button'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { Textarea } from './ui/textarea'
 
 const formSchema = z.object({
-  galon: z.coerce.number().min(0, { message: "Tidak bisa menerima order negatif" }),
-  karton: z.coerce.number().min(0, { message: "Tidak bisa menerima order negatif" })
+  order: z.coerce.number().min(0, { message: "Tidak bisa menerima order negatif" }),
+  terjual: z.coerce.number().min(0, { message: "Tidak bisa menerima order negatif" }),
+  catatan: z.string().nullable()
 })
 
 export const FormOrder = () => {
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema)
+    resolver: zodResolver(formSchema),
+    defaultValues:{
+      catatan: ""
+    }
   })
   const route = useRouter()
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values)
-    route.push("/")
-    toast.success('Order berhasil dikirim'+values.galon+values.karton)
+    try {
+      console.log(values)
+      route.push("/")
+      toast.success('Order: '+values.order+"Terjual: "+values.terjual)
+    } catch (error) {
+      toast.error(error as string)
+      console.error(error as string)
+    }
   }
 
   return (
@@ -42,10 +52,10 @@ export const FormOrder = () => {
         <div className='flex gap-4'>
           <FormField
             control={form.control}
-            name="karton"
+            name="terjual"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className='text-xs'>Laku<span className='text-destructive-foreground'>*</span></FormLabel>
+                <FormLabel className='text-xs'>Terjual<span className='text-destructive-foreground'>*</span></FormLabel>
                 <FormControl>
                   <Input {...field} type='number' placeholder="Laku" value={field.value ?? ''} />
                 </FormControl>
@@ -54,7 +64,7 @@ export const FormOrder = () => {
           />
           <FormField
             control={form.control}
-            name="galon"
+            name="order"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className='text-xs'>Order<span className='text-destructive-foreground'>*</span></FormLabel>
@@ -64,7 +74,19 @@ export const FormOrder = () => {
               </FormItem>
             )}
           />
-        </div>
+          </div>
+          <FormField
+            control={form.control}
+            name="catatan"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className='text-xs'>Catatan (Opsional)</FormLabel>
+                <FormControl>
+                  <Textarea value={field.value || undefined}/>
+                </FormControl>
+              </FormItem>
+            )}
+          />
         <Button type='submit' className='w-full md:w-[80px]'>Submit</Button>
       </form>
     </Form>
